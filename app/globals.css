@@ -28,11 +28,16 @@ body {
 }
 
 .mercurio-button-primary {
-  @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95;
+  @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95 px-6;
   background-color: var(--mercurio-navy);
 }
 
 .mercurio-button-primary::after {
   content: '';
-  @apply absolute bottom-0 left-0 w-full h-2 mercurio-gradient-wave;
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, var(--mercurio-yellow) 0%, var(--mercurio-pink) 100%);
 }
