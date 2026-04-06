@@ -70,7 +70,7 @@ export default function PromoGallery({ promotions, onDelete }) {
               )}
               <div className="flex items-center justify-between mt-3">
                 <span className="text-xs text-gray-400">
-                  {new Date(promo.createdAt).toLocaleDateString("es-AR", {
+                  {new Date(promo.created_at).toLocaleDateString("es-AR", {
                     day: "2-digit",
                     month: "short",
                     year: "numeric",

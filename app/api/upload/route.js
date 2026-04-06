@@ -1,38 +1,11 @@
-import { writeFile, mkdir, readFile } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import { supabase } from "@/lib/supabase";
 import { randomUUID } from "crypto";
 
-const DB_PATH = path.join(process.cwd(), "data", "promotions.json");
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-const MAX_SIZE = 10 * 1024 * 1024; // 10 MB
-
-async function ensureDirs() {
-  if (!existsSync(path.join(process.cwd(), "data"))) {
-    await mkdir(path.join(process.cwd(), "data"), { recursive: true });
-  }
-  if (!existsSync(UPLOAD_DIR)) {
-    await mkdir(UPLOAD_DIR, { recursive: true });
-  }
-}
-
-async function readDB() {
-  try {
-    const raw = await readFile(DB_PATH, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-async function writeDB(data) {
-  await writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-}
+const MAX_SIZE = 10 * 1024 * 1024;
+const BUCKET = "promotions";
 
 export async function POST(request) {
   try {
-    await ensureDirs();
-
     const formData = await request.formData();
     const image = formData.get("image");
     const title = formData.get("title")?.toString().trim();
@@ -57,21 +30,30 @@ export async function POST(request) {
 
     const ext = image.name.split(".").pop().toLowerCase();
     const filename = `${randomUUID()}.${ext}`;
-    const filePath = path.join(UPLOAD_DIR, filename);
-    await writeFile(filePath, buffer);
 
-    const promo = {
-      id: randomUUID(),
-      title,
-      description,
-      url: `/uploads/${filename}`,
-      filename,
-      createdAt: new Date().toISOString(),
-    };
+    const { error: uploadError } = await supabase.storage
+      .from(BUCKET)
+      .upload(filename, buffer, { contentType: image.type });
 
-    const db = await readDB();
-    db.unshift(promo);
-    await writeDB(db);
+    if (uploadError) {
+      console.error(uploadError);
+      return Response.json({ error: "Error al subir la imagen." }, { status: 500 });
+    }
+
+    const { data: { publicUrl } } = supabase.storage
+      .from(BUCKET)
+      .getPublicUrl(filename);
+
+    const { data: promo, error: dbError } = await supabase
+      .from("promotions")
+      .insert({ title, description, url: publicUrl, filename })
+      .select()
+      .single();
+
+    if (dbError) {
+      console.error(dbError);
+      return Response.json({ error: "Error al guardar en la base de datos." }, { status: 500 });
+    }
 
     return Response.json(promo, { status: 201 });
   } catch (err) {

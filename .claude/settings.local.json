@@ -9,7 +9,12 @@
       "Bash(mv promociones-app/README.md .)",
       "Bash(mv promociones-app/app .)",
       "Bash(mv promociones-app/eslint.config.mjs .)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(ls /c/Users/Usuario/Desktop/Proyectos/Promociones/.*)",
+      "Bash(ls /c/Users/Usuario/Desktop/Proyectos/Promociones/babel*)",
+      "Bash(ls /c/Users/Usuario/Desktop/Proyectos/Promociones/.babelrc*)",
+      "Bash(dir node_modules)",
+      "Bash(npm install:*)"
     ]
   }
 }

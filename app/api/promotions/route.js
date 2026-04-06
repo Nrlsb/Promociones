@@ -1,26 +1,17 @@
-import { readFile, writeFile, unlink } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import { supabase } from "@/lib/supabase";
 
-const DB_PATH = path.join(process.cwd(), "data", "promotions.json");
-const UPLOAD_DIR = path.join(process.cwd(), "public", "uploads");
-
-async function readDB() {
-  try {
-    const raw = await readFile(DB_PATH, "utf-8");
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-}
-
-async function writeDB(data) {
-  await writeFile(DB_PATH, JSON.stringify(data, null, 2), "utf-8");
-}
+const BUCKET = "promotions";
 
 export async function GET() {
-  const db = await readDB();
-  return Response.json(db);
+  const { data, error } = await supabase
+    .from("promotions")
+    .select("*")
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    return Response.json({ error: error.message }, { status: 500 });
+  }
+  return Response.json(data);
 }
 
 export async function DELETE(request) {
@@ -31,21 +22,26 @@ export async function DELETE(request) {
     return Response.json({ error: "ID requerido." }, { status: 400 });
   }
 
-  const db = await readDB();
-  const index = db.findIndex((p) => p.id === id);
+  const { data: promo, error: fetchError } = await supabase
+    .from("promotions")
+    .select("filename")
+    .eq("id", id)
+    .single();
 
-  if (index === -1) {
+  if (fetchError || !promo) {
     return Response.json({ error: "Promoción no encontrada." }, { status: 404 });
   }
 
-  const [promo] = db.splice(index, 1);
+  await supabase.storage.from(BUCKET).remove([promo.filename]);
 
-  // Delete file from disk
-  const filePath = path.join(UPLOAD_DIR, promo.filename);
-  if (existsSync(filePath)) {
-    await unlink(filePath);
+  const { error: deleteError } = await supabase
+    .from("promotions")
+    .delete()
+    .eq("id", id);
+
+  if (deleteError) {
+    return Response.json({ error: deleteError.message }, { status: 500 });
   }
 
-  await writeDB(db);
   return Response.json({ success: true });
 }
