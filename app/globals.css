@@ -1,5 +1,38 @@
 @import "tailwindcss";
 
+@theme {
+  --color-mercurio-navy: #162d5f;
+  --color-mercurio-pink: #e21b5a;
+  --color-mercurio-yellow: #ffd700;
+  --color-mercurio-light: #f8fafc;
+}
+
+:root {
+  --mercurio-navy: #162d5f;
+  --mercurio-pink: #e21b5a;
+  --mercurio-yellow: #ffd700;
+}
+
 body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+  background-color: var(--color-mercurio-light);
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mercurio-gradient-wave {
+  background: linear-gradient(90deg, var(--mercurio-yellow) 0%, var(--mercurio-pink) 100%);
+}
+
+.mercurio-card {
+  @apply bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden;
+}
+
+.mercurio-button-primary {
+  @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95;
+  background-color: var(--mercurio-navy);
+}
+
+.mercurio-button-primary::after {
+  content: '';
+  @apply absolute bottom-0 left-0 w-full h-2 mercurio-gradient-wave;
 }

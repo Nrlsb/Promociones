@@ -1,5 +1,7 @@
 import { Geist } from "next/font/google";
 import "./globals.css";
+import Header from "./components/Header";
+import BottomNav from "./components/BottomNav";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -7,15 +9,19 @@ const geistSans = Geist({
 });
 
 export const metadata = {
-  title: "Promociones de mi Tienda",
+  title: "Mercurio - Panel de Promociones",
   description: "Cargá y mostrá las promociones de tu tienda",
 };
 
 export default function RootLayout({ children }) {
   return (
     <html lang="es" className={`${geistSans.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-gray-50 text-gray-900">
-        {children}
+      <body className="min-h-full flex flex-col bg-slate-50 text-slate-900 pb-20">
+        <Header />
+        <main className="flex-1 max-w-lg mx-auto w-full px-4 pt-6">
+          {children}
+        </main>
+        <BottomNav />
       </body>
     </html>
   );

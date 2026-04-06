@@ -98,37 +98,37 @@ export default function UploadZone({ onUploadSuccess }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-      <h2 className="text-xl font-semibold text-gray-800 mb-4">
-        Agregar promoción
+    <div className="mercurio-card p-6 shadow-md border-0 mb-8">
+      <h2 className="text-2xl font-bold text-slate-800 mb-6">
+        Crear promoción
       </h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         {/* Título */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Título <span className="text-red-500">*</span>
+          <label className="block text-lg font-semibold text-slate-700 mb-2">
+            Título de la promoción
           </label>
           <input
             type="text"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder="Ej: 30% OFF en electrónica"
-            className="w-full rounded-lg border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+            placeholder="Ej: 20% OFF en Pintura Látex"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-mercurio-navy placeholder:text-slate-400"
           />
         </div>
 
         {/* Descripción */}
         <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Descripción (opcional)
+          <label className="block text-lg font-semibold text-slate-700 mb-2">
+            Descripción
           </label>
-          <textarea
+          <input
+            type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            placeholder="Detallá la promoción..."
-            rows={2}
-            className="w-full rounded-lg border border-gray-200 px-4 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+            placeholder="Detallá tu oferta especial"
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-mercurio-navy placeholder:text-slate-400"
           />
         </div>
 
@@ -138,32 +138,37 @@ export default function UploadZone({ onUploadSuccess }) {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
-          className={`relative flex flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed p-8 cursor-pointer transition-colors ${
-            isDragging
-              ? "border-blue-400 bg-blue-50"
-              : "border-gray-200 hover:border-blue-300 hover:bg-gray-50"
-          }`}
+          className={`relative group h-32 flex flex-col items-center justify-center gap-2 rounded-[1.5rem] border-2 border-dashed transition-all cursor-pointer overflow-hidden ${isDragging
+              ? "border-mercurio-navy bg-mercurio-light"
+              : "border-slate-300 hover:border-mercurio-navy"
+            }`}
         >
-          <svg
-            className="w-10 h-10 text-gray-400"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
-            />
-          </svg>
-          <p className="text-sm text-gray-500">
-            <span className="font-medium text-blue-600">
-              Hacé click para seleccionar
-            </span>{" "}
-            o arrastrá imágenes aquí
-          </p>
-          <p className="text-xs text-gray-400">PNG, JPG, WEBP — máx. 10 MB</p>
+          {/* Wave Background logic in CSS would be complex, using a simple gradient overlay for now */}
+          <div className="absolute inset-x-0 bottom-0 h-8 opacity-20 mercurio-gradient-wave blur-xl" />
+
+          <div className="flex items-center gap-3 text-mercurio-navy font-semibold z-10">
+            <svg
+              className="w-7 h-7"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+              />
+            </svg>
+            <span className="text-lg">Subir imagen de la promoción</span>
+          </div>
+
+          {/* Actual wave design as seen in image */}
+          <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden opacity-10">
+            <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full mercurio-gradient-wave rotate-45 blur-2xl" />
+            <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full mercurio-gradient-wave -rotate-45 blur-2xl" />
+          </div>
+
           <input
             ref={fileInputRef}
             type="file"
@@ -176,9 +181,9 @@ export default function UploadZone({ onUploadSuccess }) {
 
         {/* Previews */}
         {previewFiles.length > 0 && (
-          <div className="grid grid-cols-3 gap-3 sm:grid-cols-4">
+          <div className="grid grid-cols-4 gap-2">
             {previewFiles.map((p, i) => (
-              <div key={i} className="relative group rounded-lg overflow-hidden aspect-square bg-gray-100">
+              <div key={i} className="relative group rounded-lg overflow-hidden aspect-square bg-slate-100 shadow-inner">
                 <img
                   src={p.preview}
                   alt={p.name}
@@ -187,7 +192,7 @@ export default function UploadZone({ onUploadSuccess }) {
                 <button
                   type="button"
                   onClick={() => removePreview(i)}
-                  className="absolute top-1 right-1 bg-black/60 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                  className="absolute top-1 right-1 bg-black/60 text-white rounded-full w-5 h-5 flex items-center justify-center text-[10px]"
                 >
                   ✕
                 </button>
@@ -197,7 +202,10 @@ export default function UploadZone({ onUploadSuccess }) {
         )}
 
         {error && (
-          <p className="text-sm text-red-600 bg-red-50 rounded-lg px-4 py-2">
+          <p className="text-sm text-red-600 bg-red-50 rounded-xl px-4 py-3 flex items-center gap-2">
+            <svg className="w-4 h-4 shrink-0" fill="currentColor" viewBox="0 0 20 20">
+              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+            </svg>
             {error}
           </p>
         )}
@@ -205,9 +213,11 @@ export default function UploadZone({ onUploadSuccess }) {
         <button
           type="submit"
           disabled={uploading || !previewFiles.length}
-          className="w-full rounded-xl bg-blue-600 text-white py-2.5 text-sm font-semibold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+          className="mercurio-button-primary w-full py-4 text-xl shadow-lg disabled:opacity-50 disabled:active:scale-100 h-16 flex items-center justify-center"
         >
-          {uploading ? "Subiendo..." : `Subir${previewFiles.length > 1 ? ` ${previewFiles.length} imágenes` : " imagen"}`}
+          {uploading ? (
+            <div className="w-6 h-6 border-4 border-white/20 border-t-white rounded-full animate-spin" />
+          ) : "Subir promoción"}
         </button>
       </form>
     </div>
