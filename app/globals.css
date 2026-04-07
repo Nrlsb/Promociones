@@ -5,18 +5,39 @@
   --color-mercurio-pink: #e21b5a;
   --color-mercurio-yellow: #ffd700;
   --color-mercurio-light: #f8fafc;
+
+  --shadow-premium: 0 10px 30px -10px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-premium-hover: 0 20px 40px -15px rgba(0, 0, 0, 0.15), 0 8px 12px -5px rgba(0, 0, 0, 0.08);
 }
 
 :root {
   --mercurio-navy: #162d5f;
   --mercurio-pink: #e21b5a;
   --mercurio-yellow: #ffd700;
+  --mercurio-light: #f8fafc;
 }
 
 body {
-  font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
-  background-color: var(--color-mercurio-light);
+  font-family: 'Outfit', var(--font-geist-sans), sans-serif;
+  background-color: var(--mercurio-light);
+  color: #1a202c;
   -webkit-tap-highlight-color: transparent;
+}
+
+/* Glassmorphism Classes */
+.glass-effect {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.glass-nav {
+  background: rgba(22, 45, 95, 0.85);
+  /* Mercurio Navy with transparency */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .mercurio-gradient-wave {
@@ -24,20 +45,41 @@ body {
 }
 
 .mercurio-card {
-  @apply bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden;
+  @apply bg-white rounded-[2rem] border border-white/40 overflow-hidden transition-all duration-300;
+  box-shadow: var(--shadow-premium);
 }
 
-.mercurio-button-primary {
-  @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95 px-6;
+.mercurio-card:hover {
+  @apply -translate-y-2;
+  box-shadow: var(--shadow-premium-hover);
+}
+
+.premium-button {
+  @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95 px-6 py-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2;
   background-color: var(--mercurio-navy);
 }
 
-.mercurio-button-primary::after {
+.premium-button::before {
   content: '';
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(90deg, var(--mercurio-yellow) 0%, var(--mercurio-pink) 100%);
+  @apply absolute inset-0 opacity-0 transition-opacity duration-300 bg-gradient-to-r from-transparent via-white/10 to-transparent;
+}
+
+.premium-button:hover::before {
+  @apply opacity-100;
+}
+
+@keyframes entrance {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-entrance {
+  animation: entrance 0.6s ease-out forwards;
 }
