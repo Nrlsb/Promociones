@@ -15,6 +15,11 @@ export async function GET() {
 }
 
 export async function DELETE(request) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    return Response.json({ error: "No autorizado." }, { status: 401 });
+  }
+
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
 

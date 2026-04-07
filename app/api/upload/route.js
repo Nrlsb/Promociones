@@ -5,6 +5,11 @@ const MAX_SIZE = 10 * 1024 * 1024;
 const BUCKET = "promotions";
 
 export async function POST(request) {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    return Response.json({ error: "No autorizado." }, { status: 401 });
+  }
+
   try {
     const formData = await request.formData();
     const image = formData.get("image");

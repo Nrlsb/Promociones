@@ -21,6 +21,8 @@ export default function HomePage() {
 
   useEffect(() => {
     fetchPromotions();
+    // Registrar visita
+    fetch("/api/stats", { method: "POST" }).catch(console.error);
   }, [fetchPromotions]);
 
   return (
