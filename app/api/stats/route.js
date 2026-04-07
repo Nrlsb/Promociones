@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function GET() {
     const { data, error } = await supabase
@@ -16,12 +17,12 @@ export async function GET() {
 }
 
 export async function POST() {
-    // Usamos una función RPC de Supabase para incrementar atómicamente
-    const { error } = await supabase.rpc("increment_visits");
+    // Usamos una función RPC de Supabase para incrementar atómicamente con el cliente admin
+    const { error } = await supabaseAdmin.rpc("increment_visits");
 
     if (error) {
-        // Si el RPC falla (p.ej. no existe), intentamos un update normal
-        const { data: current } = await supabase
+        // Si el RPC falla (p.ej. no existe), intentamos un update normal con admin
+        const { data: current } = await supabaseAdmin
             .from("stats")
             .select("count")
             .eq("id", "visits")
@@ -29,7 +30,7 @@ export async function POST() {
 
         const newCount = (current?.count || 0) + 1;
 
-        const { error: updateError } = await supabase
+        const { error: updateError } = await supabaseAdmin
             .from("stats")
             .update({ count: newCount })
             .eq("id", "visits");

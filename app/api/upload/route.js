@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 import { randomUUID } from "crypto";
 
 const MAX_SIZE = 10 * 1024 * 1024;
@@ -41,21 +42,20 @@ export async function POST(request) {
     const ext = image.name.split(".").pop().toLowerCase();
     const filename = `${randomUUID()}.${ext}`;
 
-    // Asegurar que el bucket existe (si no existe, lo crea)
-    const { data: buckets } = await supabase.storage.listBuckets();
+    // Asegurar que el bucket existe usando el cliente admin
+    const { data: buckets } = await supabaseAdmin.storage.listBuckets();
     if (!buckets?.find(b => b.name === BUCKET)) {
-      const { error: bucketError } = await supabase.storage.createBucket(BUCKET, {
+      const { error: bucketError } = await supabaseAdmin.storage.createBucket(BUCKET, {
         public: true,
         allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
         fileSizeLimit: MAX_SIZE
       });
       if (bucketError) {
         console.error("Error al crear bucket:", bucketError);
-        // Continuamos de todos modos por si ya existe pero listBuckets falló por permisos
       }
     }
 
-    const { error: uploadError } = await supabase.storage
+    const { error: uploadError } = await supabaseAdmin.storage
       .from(BUCKET)
       .upload(filename, buffer, {
         contentType: image.type,
@@ -67,11 +67,11 @@ export async function POST(request) {
       return Response.json({ error: `Error al subir la imagen: ${uploadError.message}` }, { status: 500 });
     }
 
-    const { data: { publicUrl } } = supabase.storage
+    const { data: { publicUrl } } = supabaseAdmin.storage
       .from(BUCKET)
       .getPublicUrl(filename);
 
-    const { data: promo, error: dbError } = await supabase
+    const { data: promo, error: dbError } = await supabaseAdmin
       .from("promotions")
       .insert({ title, description, url: publicUrl, filename })
       .select()

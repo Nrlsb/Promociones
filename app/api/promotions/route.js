@@ -1,4 +1,5 @@
 import { supabase } from "@/lib/supabase";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 const BUCKET = "promotions";
 
@@ -35,7 +36,7 @@ export async function DELETE(request) {
     return Response.json({ error: "ID requerido." }, { status: 400 });
   }
 
-  const { data: promo, error: fetchError } = await supabase
+  const { data: promo, error: fetchError } = await supabaseAdmin
     .from("promotions")
     .select("filename")
     .eq("id", id)
@@ -45,9 +46,9 @@ export async function DELETE(request) {
     return Response.json({ error: "Promoción no encontrada." }, { status: 404 });
   }
 
-  await supabase.storage.from(BUCKET).remove([promo.filename]);
+  await supabaseAdmin.storage.from(BUCKET).remove([promo.filename]);
 
-  const { error: deleteError } = await supabase
+  const { error: deleteError } = await supabaseAdmin
     .from("promotions")
     .delete()
     .eq("id", id);
@@ -72,7 +73,7 @@ export async function PATCH(request) {
       return Response.json({ error: "ID y título son requeridos." }, { status: 400 });
     }
 
-    const { error: updateError } = await supabase
+    const { error: updateError } = await supabaseAdmin
       .from("promotions")
       .update({ title: title.trim() })
       .eq("id", id);
