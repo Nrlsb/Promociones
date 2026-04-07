@@ -168,7 +168,7 @@ export default function UploadZone({ onUploadSuccess }) {
                 <img
                   src={p.preview}
                   alt={p.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-contain"
                 />
                 <button
                   type="button"

@@ -41,13 +41,30 @@ export async function POST(request) {
     const ext = image.name.split(".").pop().toLowerCase();
     const filename = `${randomUUID()}.${ext}`;
 
+    // Asegurar que el bucket existe (si no existe, lo crea)
+    const { data: buckets } = await supabase.storage.listBuckets();
+    if (!buckets?.find(b => b.name === BUCKET)) {
+      const { error: bucketError } = await supabase.storage.createBucket(BUCKET, {
+        public: true,
+        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
+        fileSizeLimit: MAX_SIZE
+      });
+      if (bucketError) {
+        console.error("Error al crear bucket:", bucketError);
+        // Continuamos de todos modos por si ya existe pero listBuckets falló por permisos
+      }
+    }
+
     const { error: uploadError } = await supabase.storage
       .from(BUCKET)
-      .upload(filename, buffer, { contentType: image.type });
+      .upload(filename, buffer, {
+        contentType: image.type,
+        upsert: true
+      });
 
     if (uploadError) {
-      console.error(uploadError);
-      return Response.json({ error: "Error al subir la imagen." }, { status: 500 });
+      console.error("Error de carga en storage:", uploadError);
+      return Response.json({ error: `Error al subir la imagen: ${uploadError.message}` }, { status: 500 });
     }
 
     const { data: { publicUrl } } = supabase.storage
