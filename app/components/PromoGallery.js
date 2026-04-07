@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PromoGallery({ promotions, onDelete, isAdmin = false }) {
   const [deleting, setDeleting] = useState(null);
@@ -17,7 +18,7 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
     }
   };
 
-  if (!promotions.length) {
+  if (!Array.isArray(promotions) || !promotions.length) {
     return (
       <div className="flex flex-col items-center justify-center py-20 text-slate-400 animate-entrance">
         <div className="w-24 h-24 mb-6 bg-slate-100 rounded-full flex items-center justify-center shadow-inner">

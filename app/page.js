@@ -11,7 +11,7 @@ export default function HomePage() {
     try {
       const res = await fetch("/api/promotions");
       const data = await res.json();
-      setPromotions(data);
+      setPromotions(Array.isArray(data) ? data : []);
     } catch {
       setPromotions([]);
     } finally {

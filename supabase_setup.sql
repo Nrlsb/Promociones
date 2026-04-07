@@ -16,3 +16,16 @@ BEGIN
     UPDATE stats SET count = count + 1 WHERE id = 'visits';
 END;
 $$ LANGUAGE plpgsql;
+
+-- Crear tabla de promociones
+CREATE TABLE IF NOT EXISTS promotions (
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    title TEXT NOT NULL,
+    description TEXT,
+    url TEXT NOT NULL,
+    filename TEXT NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Habilitar RLS si es necesario (opcional pero recomendado)
+-- ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;
