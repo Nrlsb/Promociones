@@ -43,7 +43,7 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
     <div className="space-y-6 pb-10">
       <h2 className="text-2xl font-bold text-slate-800">Galería de promociones</h2>
 
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {promotions.map((promo, index) => {
           // Mocking status for visual fidelity based on index
           const isActive = index % 2 === 0;
@@ -78,8 +78,8 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
 
                 <div className="flex items-center justify-between mt-2">
                   <span className={`px-3 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${isActive
-                      ? "bg-green-100 text-green-700"
-                      : "bg-yellow-100 text-yellow-700"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-yellow-100 text-yellow-700"
                     }`}>
                     {isActive ? "Activa" : "Finalizada"}
                   </span>
