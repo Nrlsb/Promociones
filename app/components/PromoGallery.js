@@ -105,17 +105,6 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                   {promo.description || "Descubre esta oferta exclusiva de Mercurio Pinturerías."}
                 </p>
 
-                <div className="mt-2 pt-4 border-t border-slate-50 flex items-center justify-between">
-                  <Link
-                    href={`/promos/${promo.id}`} // Placeholder for detail view
-                    className="text-xs font-black text-mercurio-pink uppercase tracking-widest hover:translate-x-1 transition-transform inline-flex items-center gap-2"
-                  >
-                    Ver más
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 5l7 7-7 7" />
-                    </svg>
-                  </Link>
-                </div>
               </div>
             </div>
           );

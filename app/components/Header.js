@@ -5,8 +5,8 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navItems = [
-    { name: "Inicio", href: "/" },
-    { name: "Promociones", href: "/admin" },
+    { name: "Promociones", href: "/" },
+    { name: "Inicio", href: "/admin" },
 ];
 
 export default function Header() {
