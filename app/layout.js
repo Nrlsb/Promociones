@@ -12,6 +12,9 @@ const geistSans = Geist({
 export const metadata = {
   title: "Mercurio - Panel de Promociones",
   description: "Cargá y mostrá las promociones de tu tienda",
+  icons: {
+    icon: "/logoMercurio.png",
+  },
 };
 
 export default function RootLayout({ children }) {
