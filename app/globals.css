@@ -54,10 +54,26 @@ body {
   box-shadow: var(--shadow-premium-hover);
 }
 
-.premium-button {
+.premium-button,
+.mercurio-button-primary {
   @apply relative overflow-hidden rounded-full font-bold text-white transition-all active:scale-95 px-6 py-2 shadow-lg hover:shadow-xl hover:-translate-y-0.5 flex items-center justify-center gap-2;
   background-color: var(--mercurio-navy);
 }
+
+.mercurio-button-primary {
+  @apply bg-gradient-to-br from-[#162d5f] to-[#1e3a8a] border border-white/20;
+  box-shadow: 0 10px 15px -3px rgba(22, 45, 95, 0.4), 0 4px 6px -2px rgba(22, 45, 95, 0.2);
+}
+
+.mercurio-button-primary:hover {
+  @apply saturate-150;
+  box-shadow: 0 20px 25px -5px rgba(22, 45, 95, 0.5), 0 10px 10px -5px rgba(22, 45, 95, 0.3);
+}
+
+.mercurio-button-primary:disabled {
+  @apply from-slate-400 to-slate-500 shadow-none cursor-not-allowed transform-none;
+}
+
 
 .premium-button::before {
   content: '';
