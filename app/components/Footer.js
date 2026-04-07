@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
+
 
 export default function Footer() {
     return (
@@ -10,13 +12,13 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="md:col-span-1 space-y-6">
                         <Link href="/" className="flex flex-col group">
-                            <div className="text-white font-black italic text-3xl leading-none group-hover:scale-105 transition-transform duration-300">
-                                mercurio
-                            </div>
-                            <div className="text-[10px] text-white/70 uppercase tracking-[0.3em] font-black">
-                                pinturerías
-                            </div>
-                            <div className="w-20 h-[3px] mercurio-gradient-wave mt-2 rounded-full" />
+                            <Image
+                                src="/logoMercurioBlanco.png"
+                                alt="Mercurio Pinturerías"
+                                width={180}
+                                height={60}
+                                className="object-contain group-hover:scale-105 transition-transform duration-300"
+                            />
                         </Link>
                         <p className="text-white/50 text-sm leading-relaxed max-w-xs">
                             Expertos en color y protección. Transformamos tus espacios con la mejor tecnología y estilo.
@@ -42,6 +44,15 @@ export default function Footer() {
                             <li className="flex items-center gap-2">
                                 <span className="text-mercurio-pink">📞</span> 0800-COLOR
                             </li>
+                            <li>
+                                <Link
+                                    href="https://linktr.ee/PintureriaMercurio"
+                                    target="_blank"
+                                    className="flex items-center gap-2 hover:text-white transition-colors"
+                                >
+                                    <span className="text-mercurio-pink">🔗</span> Contacto (Linktree)
+                                </Link>
+                            </li>
                         </ul>
                     </div>
 
@@ -49,12 +60,19 @@ export default function Footer() {
                     <div className="space-y-6">
                         <h4 className="text-sm font-black uppercase tracking-[0.2em] text-mercurio-yellow">Seguinos</h4>
                         <div className="flex gap-4">
-                            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-mercurio-pink transition-colors cursor-pointer border border-white/10">
+                            <a
+                                href="#"
+                                className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-mercurio-pink transition-colors cursor-pointer border border-white/10"
+                            >
                                 <span className="text-lg">f</span>
-                            </div>
-                            <div className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-mercurio-pink transition-colors cursor-pointer border border-white/10">
+                            </a>
+                            <Link
+                                href="https://www.instagram.com/pint_mercurio/"
+                                target="_blank"
+                                className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center hover:bg-mercurio-pink transition-colors cursor-pointer border border-white/10"
+                            >
                                 <span className="text-lg">ig</span>
-                            </div>
+                            </Link>
                         </div>
                     </div>
                 </div>

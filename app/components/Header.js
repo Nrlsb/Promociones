@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 const navItems = [
@@ -31,13 +32,14 @@ export default function Header() {
                 </Link>
 
                 <Link href="/" className="flex flex-col items-center md:items-start justify-center group">
-                    <div className="text-white font-black italic text-2xl md:text-3xl leading-none group-hover:scale-105 transition-transform duration-300">
-                        mercurio
-                    </div>
-                    <div className="text-[8px] md:text-[10px] text-white/90 uppercase tracking-[0.2em] font-black">
-                        pinturerías
-                    </div>
-                    <div className="w-full h-[3px] mercurio-gradient-wave mt-1 rounded-full shadow-[0_0_10px_rgba(255,215,0,0.5)]" />
+                    <Image
+                        src="/logoMercurioBlanco.png"
+                        alt="Mercurio Pinturerías"
+                        width={150}
+                        height={50}
+                        className="object-contain group-hover:scale-105 transition-transform duration-300"
+                        priority
+                    />
                 </Link>
             </div>
 
