@@ -38,12 +38,6 @@ export default function Footer() {
                     <div className="space-y-6">
                         <h4 className="text-sm font-black uppercase tracking-[0.2em] text-mercurio-yellow">Contacto</h4>
                         <ul className="space-y-3 text-sm font-bold text-white/60">
-                            <li className="flex items-center gap-2">
-                                <span className="text-mercurio-pink">📍</span> Casa Central
-                            </li>
-                            <li className="flex items-center gap-2">
-                                <span className="text-mercurio-pink">📞</span> 0800-COLOR
-                            </li>
                             <li>
                                 <Link
                                     href="https://linktr.ee/PintureriaMercurio"
