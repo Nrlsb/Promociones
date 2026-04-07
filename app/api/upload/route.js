@@ -5,8 +5,13 @@ const MAX_SIZE = 10 * 1024 * 1024;
 const BUCKET = "promotions";
 
 export async function POST(request) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+  const token = request.cookies.get("sb-access-token")?.value;
+  if (!token) {
+    return Response.json({ error: "No autorizado." }, { status: 401 });
+  }
+
+  const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+  if (authError || !user) {
     return Response.json({ error: "No autorizado." }, { status: 401 });
   }
 
@@ -14,7 +19,7 @@ export async function POST(request) {
     const formData = await request.formData();
     const image = formData.get("image");
     const title = formData.get("title")?.toString().trim();
-    const description = formData.get("description")?.toString().trim() || "";
+    const description = ""; // Se ignora la descripción según requerimiento
 
     if (!image || typeof image === "string") {
       return Response.json({ error: "No se recibió ninguna imagen." }, { status: 400 });

@@ -2,6 +2,14 @@ import { supabase } from "@/lib/supabase";
 
 const BUCKET = "promotions";
 
+async function getUser(request) {
+  const token = request.cookies.get("sb-access-token")?.value;
+  if (!token) return null;
+  const { data: { user }, error } = await supabase.auth.getUser(token);
+  if (error || !user) return null;
+  return user;
+}
+
 export async function GET() {
   const { data, error } = await supabase
     .from("promotions")
@@ -15,8 +23,8 @@ export async function GET() {
 }
 
 export async function DELETE(request) {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (!session) {
+  const user = await getUser(request);
+  if (!user) {
     return Response.json({ error: "No autorizado." }, { status: 401 });
   }
 
@@ -49,4 +57,32 @@ export async function DELETE(request) {
   }
 
   return Response.json({ success: true });
+}
+
+export async function PATCH(request) {
+  const user = await getUser(request);
+  if (!user) {
+    return Response.json({ error: "No autorizado." }, { status: 401 });
+  }
+
+  try {
+    const { id, title } = await request.json();
+
+    if (!id || !title) {
+      return Response.json({ error: "ID y título son requeridos." }, { status: 400 });
+    }
+
+    const { error: updateError } = await supabase
+      .from("promotions")
+      .update({ title: title.trim() })
+      .eq("id", id);
+
+    if (updateError) {
+      return Response.json({ error: updateError.message }, { status: 500 });
+    }
+
+    return Response.json({ success: true });
+  } catch (err) {
+    return Response.json({ error: "Error al procesar la solicitud." }, { status: 400 });
+  }
 }

@@ -7,7 +7,6 @@ export default function UploadZone({ onUploadSuccess }) {
   const [uploading, setUploading] = useState(false);
   const [error, setError] = useState(null);
   const [title, setTitle] = useState("");
-  const [description, setDescription] = useState("");
   const [previewFiles, setPreviewFiles] = useState([]);
   const fileInputRef = useRef(null);
 
@@ -71,7 +70,6 @@ export default function UploadZone({ onUploadSuccess }) {
         const formData = new FormData();
         formData.append("image", file);
         formData.append("title", title.trim());
-        formData.append("description", description.trim());
 
         const res = await fetch("/api/upload", {
           method: "POST",
@@ -87,7 +85,6 @@ export default function UploadZone({ onUploadSuccess }) {
       previewFiles.forEach((p) => URL.revokeObjectURL(p.preview));
       setPreviewFiles([]);
       setTitle("");
-      setDescription("");
       if (fileInputRef.current) fileInputRef.current.value = "";
       onUploadSuccess?.();
     } catch (err) {
@@ -118,20 +115,6 @@ export default function UploadZone({ onUploadSuccess }) {
           />
         </div>
 
-        {/* Descripción */}
-        <div>
-          <label className="block text-lg font-semibold text-slate-700 mb-2">
-            Descripción
-          </label>
-          <input
-            type="text"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Detallá tu oferta especial"
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-mercurio-navy placeholder:text-slate-400"
-          />
-        </div>
-
         {/* Drop zone */}
         <div
           onDragOver={handleDragOver}
@@ -139,11 +122,10 @@ export default function UploadZone({ onUploadSuccess }) {
           onDrop={handleDrop}
           onClick={() => fileInputRef.current?.click()}
           className={`relative group h-32 flex flex-col items-center justify-center gap-2 rounded-[1.5rem] border-2 border-dashed transition-all cursor-pointer overflow-hidden ${isDragging
-              ? "border-mercurio-navy bg-mercurio-light"
-              : "border-slate-300 hover:border-mercurio-navy"
+            ? "border-mercurio-navy bg-mercurio-light"
+            : "border-slate-300 hover:border-mercurio-navy"
             }`}
         >
-          {/* Wave Background logic in CSS would be complex, using a simple gradient overlay for now */}
           <div className="absolute inset-x-0 bottom-0 h-8 opacity-20 mercurio-gradient-wave blur-xl" />
 
           <div className="flex items-center gap-3 text-mercurio-navy font-semibold z-10">
@@ -163,7 +145,6 @@ export default function UploadZone({ onUploadSuccess }) {
             <span className="text-lg">Subir imagen de la promoción</span>
           </div>
 
-          {/* Actual wave design as seen in image */}
           <div className="absolute top-0 left-0 w-full h-full pointer-events-none overflow-hidden opacity-10">
             <div className="absolute -bottom-10 -left-10 w-32 h-32 rounded-full mercurio-gradient-wave rotate-45 blur-2xl" />
             <div className="absolute -top-10 -right-10 w-32 h-32 rounded-full mercurio-gradient-wave -rotate-45 blur-2xl" />
