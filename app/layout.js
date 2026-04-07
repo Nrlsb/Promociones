@@ -2,6 +2,7 @@ import { Geist } from "next/font/google";
 import "./globals.css";
 import Header from "./components/Header";
 import BottomNav from "./components/BottomNav";
+import Footer from "./components/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
         <main className="flex-1 max-w-lg md:max-w-4xl lg:max-w-6xl mx-auto w-full px-4 pt-6">
           {children}
         </main>
+        <Footer />
         <BottomNav />
       </body>
     </html>

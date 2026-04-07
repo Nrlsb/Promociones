@@ -6,8 +6,6 @@ import { usePathname } from "next/navigation";
 const navItems = [
     { name: "Inicio", href: "/" },
     { name: "Promociones", href: "/admin" },
-    { name: "Tiendas", href: "#" },
-    { name: "Perfil", href: "#" },
 ];
 
 export default function Header() {
