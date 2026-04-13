@@ -56,14 +56,11 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
               className="mercurio-card group animate-entrance"
               style={{ animationDelay: `${index * 100}ms` }}
             >
-              <div className="relative aspect-[4/5] bg-slate-100 overflow-hidden">
-                <Image
+              <div className="relative bg-slate-50 overflow-hidden">
+                <img
                   src={promo.url}
                   alt={promo.title}
-                  fill
-                  className="object-contain transition-transform duration-700 ease-out"
-                  sizes="(max-width: 640px) 100vw, 50vw"
-                  priority={index < 4}
+                  className="w-full h-auto block transition-transform duration-700 ease-out"
                 />
 
                 {/* Overlays */}
