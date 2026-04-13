@@ -1,10 +1,7 @@
+"use client";
+
 import QRCodeStyled from "@/app/components/QRCodeStyled";
 import Link from "next/link";
-
-export const metadata = {
-    title: "Código QR Premium - Mercurio",
-    description: "Acceso exclusivo a promociones Mercurio.",
-};
 
 export default function QRPage() {
     return (
