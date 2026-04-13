@@ -5,9 +5,6 @@ import Image from "next/image";
 
 export default function PromoGallery({ promotions, onDelete, isAdmin = false }) {
   const [deleting, setDeleting] = useState(null);
-  const [editingId, setEditingId] = useState(null);
-  const [editTitle, setEditTitle] = useState("");
-  const [updating, setUpdating] = useState(false);
 
   const handleDelete = async (id) => {
     if (!confirm("¿Eliminar esta promoción?")) return;
@@ -17,29 +14,6 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
       if (res.ok) onDelete?.();
     } finally {
       setDeleting(null);
-    }
-  };
-
-  const startEditing = (promo) => {
-    setEditingId(promo.id);
-    setEditTitle(promo.title);
-  };
-
-  const handleUpdate = async () => {
-    if (!editTitle.trim()) return;
-    setUpdating(true);
-    try {
-      const res = await fetch("/api/promotions", {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ id: editingId, title: editTitle }),
-      });
-      if (res.ok) {
-        setEditingId(null);
-        onDelete?.(); // Refresca la lista
-      }
-    } finally {
-      setUpdating(false);
     }
   };
 
@@ -76,8 +50,6 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
 
       <div className="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {promotions.map((promo, index) => {
-          const isActive = index % 2 === 0;
-
           return (
             <div
               key={promo.id}
@@ -97,26 +69,8 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {/* Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
-                <div className="absolute top-4 left-4">
-                  <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.1em] shadow-lg backdrop-blur-md border border-white/20 ${isActive
-                    ? "bg-green-500/80 text-white"
-                    : "bg-mercurio-pink/80 text-white"
-                    }`}>
-                    {isActive ? "✨ Activa" : "Finalizada"}
-                  </span>
-                </div>
-
                 {isAdmin && (
                   <div className="absolute top-4 right-4 flex gap-2">
-                    <button
-                      onClick={() => startEditing(promo)}
-                      className="w-10 h-10 bg-white/20 hover:bg-white/40 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 border border-white/30"
-                      title="Editar título"
-                    >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                      </svg>
-                    </button>
                     <button
                       onClick={() => handleDelete(promo.id)}
                       disabled={deleting === promo.id}
@@ -130,39 +84,6 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                       )}
                     </button>
                   </div>
-                )}
-              </div>
-
-              <div className="p-6 bg-white flex flex-col gap-3">
-                {editingId === promo.id ? (
-                  <div className="flex flex-col gap-2">
-                    <input
-                      autoFocus
-                      type="text"
-                      value={editTitle}
-                      onChange={(e) => setEditTitle(e.target.value)}
-                      className="w-full px-3 py-2 border border-slate-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-mercurio-navy"
-                    />
-                    <div className="flex gap-2">
-                      <button
-                        onClick={handleUpdate}
-                        disabled={updating}
-                        className="flex-1 bg-mercurio-navy text-white py-1.5 rounded-lg text-xs font-bold hover:opacity-90 transition-opacity disabled:opacity-50"
-                      >
-                        {updating ? "Guardando..." : "Guardar"}
-                      </button>
-                      <button
-                        onClick={() => setEditingId(null)}
-                        className="flex-1 bg-slate-100 text-slate-600 py-1.5 rounded-lg text-xs font-bold hover:bg-slate-200 transition-colors"
-                      >
-                        Cancelar
-                      </button>
-                    </div>
-                  </div>
-                ) : (
-                  <h3 className="text-xl font-black text-slate-900 leading-none group-hover:text-mercurio-navy transition-colors">
-                    {promo.title}
-                  </h3>
                 )}
               </div>
             </div>
