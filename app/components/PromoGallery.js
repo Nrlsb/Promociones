@@ -61,7 +61,7 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                   src={promo.url}
                   alt={promo.title}
                   fill
-                  className="object-cover group-hover:scale-110 transition-transform duration-700 ease-out"
+                  className="object-contain transition-transform duration-700 ease-out"
                   sizes="(max-width: 640px) 100vw, 50vw"
                   priority={index < 4}
                 />
