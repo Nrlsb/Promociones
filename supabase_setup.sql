@@ -24,6 +24,8 @@ CREATE TABLE IF NOT EXISTS promotions (
     description TEXT,
     url TEXT NOT NULL,
     filename TEXT NOT NULL,
+    terms_url TEXT,
+    terms_filename TEXT,
     created_at TIMESTAMPTZ DEFAULT now()
 );
 

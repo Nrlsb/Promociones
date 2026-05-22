@@ -66,12 +66,28 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {/* Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
+                {promo.terms_url && (
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-15">
+                    <a
+                      href={promo.terms_url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="bg-white/90 hover:bg-white text-slate-800 text-xs font-bold py-2.5 px-4 rounded-full shadow-md flex items-center gap-2 transition-all duration-300 border border-slate-100 backdrop-blur-sm hover:scale-105 active:scale-95"
+                    >
+                      <svg className="w-4 h-4 text-mercurio-navy shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                      </svg>
+                      <span>Bases y condiciones</span>
+                    </a>
+                  </div>
+                )}
+
                 {isAdmin && (
-                  <div className="absolute top-4 right-4 flex gap-2">
+                  <div className="absolute top-4 right-4 flex gap-2 z-10">
                     <button
                       onClick={() => handleDelete(promo.id)}
                       disabled={deleting === promo.id}
-                      className="w-10 h-10 bg-white/20 hover:bg-red-500/90 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 border border-white/30"
+                      className="w-10 h-10 bg-white/20 hover:bg-red-500/90 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 border border-white/30 cursor-pointer"
                       title="Eliminar"
                     >
                       {deleting === promo.id ? "..." : (
