@@ -52,9 +52,10 @@ export default async function TermsPage({ params }) {
         <div className="flex-1 h-[2px] bg-gradient-to-r from-slate-100 via-slate-200 to-transparent rounded-full mb-8" />
 
         {/* Contenido de los términos */}
-        <div className="text-slate-600 text-base md:text-lg leading-relaxed whitespace-pre-line font-medium tracking-wide">
-          {promo.terms}
-        </div>
+        <div 
+          className="text-slate-600 text-base md:text-lg leading-relaxed font-medium tracking-wide terms-content"
+          dangerouslySetInnerHTML={{ __html: promo.terms }}
+        />
 
         {/* Decoración inferior */}
         <div className="mt-12 pt-8 border-t border-slate-100 flex items-center justify-between text-xs text-slate-400 font-semibold">

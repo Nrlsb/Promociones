@@ -99,3 +99,59 @@ body {
 .animate-entrance {
   animation: entrance 0.6s ease-out forwards;
 }
+
+/* Editor de bases y condiciones y estilos de renderizado */
+.terms-editor:empty:before {
+  content: attr(placeholder);
+  color: #94a3b8;
+  cursor: text;
+}
+
+.terms-content {
+  font-family: inherit;
+}
+
+.terms-content p {
+  margin-bottom: 0.75rem;
+  line-height: 1.6;
+}
+
+.terms-content strong, .terms-content b {
+  font-weight: 700;
+  color: var(--mercurio-navy);
+}
+
+.terms-content u {
+  text-decoration: underline;
+}
+
+.terms-content em, .terms-content i {
+  font-style: italic;
+}
+
+.terms-content ul {
+  list-style-type: disc;
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.terms-content ol {
+  list-style-type: decimal;
+  margin-left: 1.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.terms-content li {
+  margin-bottom: 0.25rem;
+}
+
+.terms-content h1, .terms-content h2, .terms-content h3, .terms-content h4 {
+  font-weight: 800;
+  color: var(--mercurio-navy);
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.terms-content h1 { font-size: 1.5rem; }
+.terms-content h2 { font-size: 1.3rem; }
+.terms-content h3 { font-size: 1.15rem; }

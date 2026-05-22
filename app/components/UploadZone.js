@@ -21,6 +21,7 @@ export default function UploadZone({ onUploadSuccess }) {
   const [customInstallments, setCustomInstallments] = useState("");
   const [isCustomInstallments, setIsCustomInstallments] = useState(false);
   const fileInputRef = useRef(null);
+  const editorRef = useRef(null);
 
   const toggleMethod = (id) => {
     setSelectedMethods((prev) => {
@@ -32,6 +33,29 @@ export default function UploadZone({ onUploadSuccess }) {
       }
       return next;
     });
+  };
+
+  const handleEditorInput = (e) => {
+    let html = e.currentTarget.innerHTML;
+    // Si queda un br vacío o párrafo vacío que rompe el placeholder, limpiarlo por completo
+    if (html === "<br>" || html === "<p><br></p>" || html === "<div><br></div>" || html === "<div></div>") {
+      e.currentTarget.innerHTML = "";
+      html = "";
+    }
+    setTerms(html);
+  };
+
+  const handlePaste = (e) => {
+    const items = (e.clipboardData || e.originalEvent?.clipboardData)?.items;
+    if (items) {
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf("image") === 0) {
+          e.preventDefault();
+          alert("No se permiten imágenes en el texto de bases y condiciones.");
+          return;
+        }
+      }
+    }
   };
 
   const handleDragOver = useCallback((e) => {
@@ -117,6 +141,7 @@ export default function UploadZone({ onUploadSuccess }) {
       setPreviewFiles([]);
       setTitle("");
       setTerms("");
+      if (editorRef.current) editorRef.current.innerHTML = "";
       setSelectedMethods([]);
       setInstallments("");
       setCustomInstallments("");
@@ -343,13 +368,97 @@ export default function UploadZone({ onUploadSuccess }) {
           <label className="block text-lg font-semibold text-slate-700 mb-2">
             Términos y condiciones (opcional)
           </label>
-          <textarea
-            value={terms}
-            onChange={(e) => setTerms(e.target.value)}
-            placeholder="Escribí aquí las bases, condiciones, vigencia o letra chica de la promoción..."
-            rows={5}
-            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-mercurio-navy placeholder:text-slate-400 resize-y bg-white"
-          />
+          <div className="w-full rounded-xl border border-slate-300 overflow-hidden bg-white focus-within:ring-2 focus-within:ring-mercurio-navy/30 focus-within:border-mercurio-navy transition-all">
+            {/* Barra de herramientas */}
+            <div className="flex flex-wrap items-center gap-1 bg-slate-50 border-b border-slate-200 px-3 py-2 select-none">
+              <button
+                type="button"
+                onClick={() => {
+                  document.execCommand("bold", false, null);
+                  editorRef.current?.focus();
+                }}
+                className="w-8 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center font-bold text-slate-700 text-sm transition-colors"
+                title="Negrita"
+              >
+                B
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  document.execCommand("italic", false, null);
+                  editorRef.current?.focus();
+                }}
+                className="w-8 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center italic font-serif text-slate-700 text-sm transition-colors"
+                title="Cursiva"
+              >
+                I
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  document.execCommand("underline", false, null);
+                  editorRef.current?.focus();
+                }}
+                className="w-8 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center underline text-slate-700 text-sm transition-colors"
+                title="Subrayado"
+              >
+                U
+              </button>
+              <div className="w-[1px] h-5 bg-slate-300 mx-1" />
+              <button
+                type="button"
+                onClick={() => {
+                  document.execCommand("insertUnorderedList", false, null);
+                  editorRef.current?.focus();
+                }}
+                className="px-2 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center gap-1 text-slate-700 text-xs font-semibold transition-colors"
+                title="Lista con viñetas"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+                <span>Viñetas</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => {
+                  document.execCommand("insertOrderedList", false, null);
+                  editorRef.current?.focus();
+                }}
+                className="px-2 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center gap-1 text-slate-700 text-xs font-semibold transition-colors"
+                title="Lista numerada"
+              >
+                <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M7 6h13M7 12h13M7 18h13M3 6h.01M3 12h.01M3 18h.01" />
+                </svg>
+                <span>Números</span>
+              </button>
+              <div className="w-[1px] h-5 bg-slate-300 mx-1" />
+              <button
+                type="button"
+                onClick={() => {
+                  if (confirm("¿Querés borrar todo el formato del texto seleccionado?")) {
+                    document.execCommand("removeFormat", false, null);
+                  }
+                  editorRef.current?.focus();
+                }}
+                className="w-8 h-8 rounded hover:bg-slate-200 active:bg-slate-300 flex items-center justify-center text-slate-700 text-sm transition-colors"
+                title="Limpiar formato"
+              >
+                🧼
+              </button>
+            </div>
+            
+            {/* Editor de texto editable */}
+            <div
+              ref={editorRef}
+              contentEditable
+              onInput={handleEditorInput}
+              onPaste={handlePaste}
+              placeholder="Pegá o escribí aquí las bases y condiciones..."
+              className="w-full min-h-[220px] max-h-[450px] overflow-y-auto px-4 py-3 text-base focus:outline-none bg-white terms-editor terms-content"
+            />
+          </div>
         </div>
 
         {error && (
