@@ -8,9 +8,8 @@ export default function UploadZone({ onUploadSuccess }) {
   const [error, setError] = useState(null);
   const [title, setTitle] = useState("");
   const [previewFiles, setPreviewFiles] = useState([]);
-  const [termsFile, setTermsFile] = useState(null);
+  const [terms, setTerms] = useState("");
   const fileInputRef = useRef(null);
-  const termsInputRef = useRef(null);
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
@@ -34,19 +33,6 @@ export default function UploadZone({ onUploadSuccess }) {
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
     if (files.length) addFiles(files);
-  };
-
-  const handleTermsChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const allowed = ["application/pdf", "image/jpeg", "image/png", "image/webp", "image/gif"];
-      if (!allowed.includes(file.type)) {
-        setError("Los términos y condiciones deben ser un archivo PDF o una imagen.");
-        return;
-      }
-      setError(null);
-      setTermsFile(file);
-    }
   };
 
   const addFiles = (files) => {
@@ -85,8 +71,8 @@ export default function UploadZone({ onUploadSuccess }) {
         const formData = new FormData();
         formData.append("image", file);
         formData.append("title", title.trim());
-        if (termsFile) {
-          formData.append("terms", termsFile);
+        if (terms.trim()) {
+          formData.append("terms", terms.trim());
         }
 
         const res = await fetch("/api/upload", {
@@ -103,9 +89,8 @@ export default function UploadZone({ onUploadSuccess }) {
       previewFiles.forEach((p) => URL.revokeObjectURL(p.preview));
       setPreviewFiles([]);
       setTitle("");
-      setTermsFile(null);
+      setTerms("");
       if (fileInputRef.current) fileInputRef.current.value = "";
-      if (termsInputRef.current) termsInputRef.current.value = "";
       onUploadSuccess?.();
     } catch (err) {
       setError(err.message);
@@ -203,62 +188,16 @@ export default function UploadZone({ onUploadSuccess }) {
         )}
 
         {/* Términos y condiciones (opcional) */}
-        <div className="bg-slate-50/50 rounded-2xl p-4 border border-slate-100">
-          <label className="block text-base font-semibold text-slate-700 mb-2">
+        <div>
+          <label className="block text-lg font-semibold text-slate-700 mb-2">
             Términos y condiciones (opcional)
           </label>
-          
-          {!termsFile ? (
-            <div
-              onClick={() => termsInputRef.current?.click()}
-              className="flex items-center gap-3 rounded-xl border border-dashed border-slate-300 hover:border-mercurio-navy bg-white px-4 py-3 cursor-pointer transition-all hover:bg-slate-50"
-            >
-              <svg className="w-6 h-6 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-              </svg>
-              <div className="text-left">
-                <p className="text-sm font-semibold text-slate-700">Subir términos y condiciones</p>
-                <p className="text-xs text-slate-400">Formatos permitidos: PDF o Imagen (Máx. 10MB)</p>
-              </div>
-            </div>
-          ) : (
-            <div className="flex items-center justify-between gap-3 bg-white border border-slate-100 rounded-xl px-4 py-3 shadow-sm">
-              <div className="flex items-center gap-3 overflow-hidden">
-                {termsFile.type === "application/pdf" ? (
-                  <svg className="w-8 h-8 text-red-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 2a1 1 0 011-1h2v3a1 1 0 001 1h3v7a1 1 0 01-1 1H7a1 1 0 01-1-1V6z" clipRule="evenodd" />
-                  </svg>
-                ) : (
-                  <svg className="w-8 h-8 text-blue-500 shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                    <path fillRule="evenodd" d="M4 3a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V5a2 2 0 00-2-2H4zm12 12H4l4-8 3 6 2-4 3 6z" clipRule="evenodd" />
-                  </svg>
-                )}
-                <div className="text-left overflow-hidden">
-                  <p className="text-sm font-semibold text-slate-700 truncate">{termsFile.name}</p>
-                  <p className="text-xs text-slate-400">{(termsFile.size / 1024 / 1024).toFixed(2)} MB</p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setTermsFile(null);
-                  if (termsInputRef.current) termsInputRef.current.value = "";
-                }}
-                className="text-slate-400 hover:text-red-500 p-1 rounded-lg hover:bg-red-50 transition-colors shrink-0"
-              >
-                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
-              </button>
-            </div>
-          )}
-          
-          <input
-            ref={termsInputRef}
-            type="file"
-            accept="application/pdf,image/*"
-            onChange={handleTermsChange}
-            className="hidden"
+          <textarea
+            value={terms}
+            onChange={(e) => setTerms(e.target.value)}
+            placeholder="Escribí aquí las bases, condiciones, vigencia o letra chica de la promoción..."
+            rows={5}
+            className="w-full rounded-xl border border-slate-300 px-4 py-3 text-base focus:outline-none focus:ring-2 focus:ring-mercurio-navy placeholder:text-slate-400 resize-y bg-white"
           />
         </div>
 

@@ -38,7 +38,7 @@ export async function DELETE(request) {
 
   const { data: promo, error: fetchError } = await supabaseAdmin
     .from("promotions")
-    .select("filename, terms_filename")
+    .select("filename")
     .eq("id", id)
     .single();
 
@@ -46,12 +46,7 @@ export async function DELETE(request) {
     return Response.json({ error: "Promoción no encontrada." }, { status: 404 });
   }
 
-  const filesToRemove = [promo.filename];
-  if (promo.terms_filename) {
-    filesToRemove.push(promo.terms_filename);
-  }
-
-  await supabaseAdmin.storage.from(BUCKET).remove(filesToRemove);
+  await supabaseAdmin.storage.from(BUCKET).remove([promo.filename]);
 
   const { error: deleteError } = await supabaseAdmin
     .from("promotions")

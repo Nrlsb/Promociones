@@ -42,28 +42,16 @@ export async function POST(request) {
     const ext = image.name.split(".").pop().toLowerCase();
     const filename = `${randomUUID()}.${ext}`;
 
-    // Asegurar que el bucket existe usando el cliente admin y acepta imágenes y PDFs
-    const allowedMimeTypes = ["image/jpeg", "image/png", "image/webp", "image/gif", "application/pdf"];
+    // Asegurar que el bucket existe usando el cliente admin y acepta imágenes
     const { data: buckets } = await supabaseAdmin.storage.listBuckets();
-    const existingBucket = buckets?.find(b => b.name === BUCKET);
-    if (!existingBucket) {
+    if (!buckets?.find(b => b.name === BUCKET)) {
       const { error: bucketError } = await supabaseAdmin.storage.createBucket(BUCKET, {
         public: true,
-        allowedMimeTypes,
+        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/gif"],
         fileSizeLimit: MAX_SIZE
       });
       if (bucketError) {
         console.error("Error al crear bucket:", bucketError);
-      }
-    } else {
-      // Actualizar el bucket existente para asegurarse de que admita PDFs e imágenes
-      const { error: updateBucketError } = await supabaseAdmin.storage.updateBucket(BUCKET, {
-        public: true,
-        allowedMimeTypes,
-        fileSizeLimit: MAX_SIZE
-      });
-      if (updateBucketError) {
-        console.error("Error al actualizar bucket:", updateBucketError);
       }
     }
 
@@ -83,42 +71,8 @@ export async function POST(request) {
       .from(BUCKET)
       .getPublicUrl(filename);
 
-    // Procesar términos y condiciones opcionales
-    const terms = formData.get("terms");
-    let termsUrl = null;
-    let termsFilename = null;
-
-    if (terms && typeof terms !== "string" && terms.size > 0) {
-      if (!allowedMimeTypes.includes(terms.type)) {
-        return Response.json({ error: "El archivo de términos debe ser una imagen o PDF." }, { status: 400 });
-      }
-
-      const termsBuffer = Buffer.from(await terms.arrayBuffer());
-      if (termsBuffer.byteLength > MAX_SIZE) {
-        return Response.json({ error: "El archivo de términos supera el límite de 10 MB." }, { status: 400 });
-      }
-
-      const termsExt = terms.name.split(".").pop().toLowerCase();
-      termsFilename = `terms-${randomUUID()}.${termsExt}`;
-
-      const { error: termsUploadError } = await supabaseAdmin.storage
-        .from(BUCKET)
-        .upload(termsFilename, termsBuffer, {
-          contentType: terms.type,
-          upsert: true
-        });
-
-      if (termsUploadError) {
-        console.error("Error al subir los términos a storage:", termsUploadError);
-        return Response.json({ error: `Error al subir los términos: ${termsUploadError.message}` }, { status: 500 });
-      }
-
-      const { data: { publicUrl: tUrl } } = supabaseAdmin.storage
-        .from(BUCKET)
-        .getPublicUrl(termsFilename);
-      
-      termsUrl = tUrl;
-    }
+    // Obtener términos y condiciones en texto
+    const terms = formData.get("terms")?.toString().trim() || null;
 
     const { data: promo, error: dbError } = await supabaseAdmin
       .from("promotions")
@@ -127,8 +81,7 @@ export async function POST(request) {
         description, 
         url: publicUrl, 
         filename,
-        terms_url: termsUrl,
-        terms_filename: termsFilename
+        terms
       })
       .select()
       .single();

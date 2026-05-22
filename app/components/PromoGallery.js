@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function PromoGallery({ promotions, onDelete, isAdmin = false }) {
   const [deleting, setDeleting] = useState(null);
@@ -66,24 +67,22 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {/* Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
-                {promo.terms_url && (
-                  <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-15">
-                    <a
-                      href={promo.terms_url}
-                      target="_blank"
-                      rel="noopener noreferrer"
+                {promo.terms && (
+                  <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">
+                    <Link
+                      href={`/terms/${promo.id}`}
                       className="bg-white/90 hover:bg-white text-slate-800 text-xs font-bold py-2.5 px-4 rounded-full shadow-md flex items-center gap-2 transition-all duration-300 border border-slate-100 backdrop-blur-sm hover:scale-105 active:scale-95"
                     >
                       <svg className="w-4 h-4 text-mercurio-navy shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
                       </svg>
                       <span>Bases y condiciones</span>
-                    </a>
+                    </Link>
                   </div>
                 )}
 
                 {isAdmin && (
-                  <div className="absolute top-4 right-4 flex gap-2 z-10">
+                  <div className="absolute top-4 right-4 flex gap-2 z-30">
                     <button
                       onClick={() => handleDelete(promo.id)}
                       disabled={deleting === promo.id}
