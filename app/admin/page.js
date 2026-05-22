@@ -45,11 +45,29 @@ export default function AdminPage() {
             const { data: { session } } = await supabase.auth.getSession();
             if (!session) {
                 router.push("/login");
+            } else {
+                // Asegurar que la cookie esté fresca al entrar
+                document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
             }
         };
         checkSession();
+
+        // Escuchar cambios de autenticación (por ejemplo, refresco de token)
+        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+            if (session) {
+                document.cookie = `sb-access-token=${session.access_token}; path=/; max-age=${60 * 60 * 24 * 7}; SameSite=Lax`;
+            } else if (event === "SIGNED_OUT") {
+                document.cookie = "sb-access-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;";
+                router.push("/login");
+            }
+        });
+
         fetchPromotions();
         fetchStats();
+
+        return () => {
+            subscription?.unsubscribe();
+        };
     }, [fetchPromotions, fetchStats, router]);
 
     return (
