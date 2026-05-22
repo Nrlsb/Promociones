@@ -74,6 +74,17 @@ export async function POST(request) {
     // Obtener términos y condiciones en texto
     const terms = formData.get("terms")?.toString().trim() || null;
 
+    // Obtener métodos de pago
+    let payment_methods = [];
+    const paymentMethodsRaw = formData.get("payment_methods");
+    if (paymentMethodsRaw) {
+      try {
+        payment_methods = JSON.parse(paymentMethodsRaw);
+      } catch (e) {
+        console.error("Error parsing payment_methods:", e);
+      }
+    }
+
     const { data: promo, error: dbError } = await supabaseAdmin
       .from("promotions")
       .insert({ 
@@ -81,7 +92,8 @@ export async function POST(request) {
         description, 
         url: publicUrl, 
         filename,
-        terms
+        terms,
+        payment_methods
       })
       .select()
       .single();

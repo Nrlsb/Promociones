@@ -25,8 +25,12 @@ CREATE TABLE IF NOT EXISTS promotions (
     url TEXT NOT NULL,
     filename TEXT NOT NULL,
     terms TEXT,
+    payment_methods TEXT[] DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT now()
 );
+
+-- Si la tabla ya existe, ejecutar esta sentencia para agregar la columna:
+-- ALTER TABLE promotions ADD COLUMN IF NOT EXISTS payment_methods TEXT[] DEFAULT '{}';
 
 -- Habilitar RLS en la tabla de promociones
 ALTER TABLE promotions ENABLE ROW LEVEL SECURITY;

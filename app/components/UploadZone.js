@@ -2,6 +2,13 @@
 
 import { useState, useRef, useCallback } from "react";
 
+const PAYMENT_METHODS = [
+  { id: "mercadopago", name: "Mercado Pago", logo: "/mercadopago.png" },
+  { id: "mastercard", name: "Mastercard", logo: "/mastercard.png" },
+  { id: "visa", name: "Visa", logo: "/visa.png" },
+  { id: "efectivo", name: "Efectivo", logo: "/efectivo.svg" }
+];
+
 export default function UploadZone({ onUploadSuccess }) {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -9,7 +16,14 @@ export default function UploadZone({ onUploadSuccess }) {
   const [title, setTitle] = useState("");
   const [previewFiles, setPreviewFiles] = useState([]);
   const [terms, setTerms] = useState("");
+  const [selectedMethods, setSelectedMethods] = useState([]);
   const fileInputRef = useRef(null);
+
+  const toggleMethod = (id) => {
+    setSelectedMethods((prev) =>
+      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
+    );
+  };
 
   const handleDragOver = useCallback((e) => {
     e.preventDefault();
@@ -74,6 +88,7 @@ export default function UploadZone({ onUploadSuccess }) {
         if (terms.trim()) {
           formData.append("terms", terms.trim());
         }
+        formData.append("payment_methods", JSON.stringify(selectedMethods));
 
         const res = await fetch("/api/upload", {
           method: "POST",
@@ -90,6 +105,7 @@ export default function UploadZone({ onUploadSuccess }) {
       setPreviewFiles([]);
       setTitle("");
       setTerms("");
+      setSelectedMethods([]);
       if (fileInputRef.current) fileInputRef.current.value = "";
       onUploadSuccess?.();
     } catch (err) {
@@ -186,6 +202,53 @@ export default function UploadZone({ onUploadSuccess }) {
             ))}
           </div>
         )}
+
+        {/* Métodos de pago */}
+        <div>
+          <label className="block text-lg font-semibold text-slate-700 mb-3">
+            Métodos de pago aceptados
+          </label>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {PAYMENT_METHODS.map((method) => {
+              const isSelected = selectedMethods.includes(method.id);
+              return (
+                <button
+                  key={method.id}
+                  type="button"
+                  onClick={() => toggleMethod(method.id)}
+                  className={`relative flex flex-col items-center justify-center p-4 rounded-2xl border transition-all duration-300 cursor-pointer select-none active:scale-95 ${
+                    isSelected
+                      ? "border-mercurio-navy bg-slate-50 shadow-md ring-2 ring-mercurio-navy/15 scale-102"
+                      : "border-slate-200 bg-white hover:border-slate-400 opacity-60 hover:opacity-95"
+                  }`}
+                >
+                  {/* Logo container */}
+                  <div className="h-10 w-full flex items-center justify-center mb-2">
+                    <img
+                      src={method.logo}
+                      alt={method.name}
+                      className={`h-full max-w-full object-contain transition-all duration-300 ${
+                        isSelected ? "filter-none opacity-100" : "filter grayscale opacity-60"
+                      }`}
+                    />
+                  </div>
+                  <span className={`text-xs font-bold transition-colors ${isSelected ? "text-mercurio-navy" : "text-slate-500"}`}>
+                    {method.name}
+                  </span>
+
+                  {/* Indicator */}
+                  {isSelected && (
+                    <div className="absolute top-2 right-2 bg-mercurio-navy text-white rounded-full p-0.5 shadow-sm">
+                      <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3.5} d="M5 13l4 4L19 7" />
+                      </svg>
+                    </div>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Términos y condiciones (opcional) */}
         <div>

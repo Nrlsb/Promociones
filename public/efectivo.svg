@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100" height="100">
+  <!-- Fondo circular suave para que parezca un logo redondo -->
+  <circle cx="50" cy="50" r="48" fill="#e2f5ec" />
+  
+  <!-- Billete de efectivo -->
+  <rect x="22" y="34" width="56" height="32" rx="4" fill="#10b981" />
+  
+  <!-- Borde interior/decorativo del billete -->
+  <rect x="26" y="38" width="48" height="24" rx="2" fill="none" stroke="#ffffff" stroke-width="2" stroke-dasharray="4 2" opacity="0.9" />
+  
+  <!-- Círculo central en el billete -->
+  <circle cx="50" cy="50" r="8" fill="#047857" />
+  <circle cx="50" cy="50" r="5" fill="#ffffff" opacity="0.9" />
+  
+  <!-- Detalles en las esquinas -->
+  <circle cx="28" cy="40" r="2" fill="#ffffff" opacity="0.9" />
+  <circle cx="72" cy="40" r="2" fill="#ffffff" opacity="0.9" />
+  <circle cx="28" cy="60" r="2" fill="#ffffff" opacity="0.9" />
+  <circle cx="72" cy="60" r="2" fill="#ffffff" opacity="0.9" />
+</svg>

@@ -67,6 +67,35 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {/* Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
+                {/* Métodos de pago */}
+                {promo.payment_methods && promo.payment_methods.length > 0 && (
+                  <div className="absolute top-4 left-4 flex gap-1.5 z-20">
+                    {promo.payment_methods.map((method) => {
+                      const logoMap = {
+                        mercadopago: { name: "Mercado Pago", logo: "/mercadopago.png" },
+                        mastercard: { name: "Mastercard", logo: "/mastercard.png" },
+                        visa: { name: "Visa", logo: "/visa.png" },
+                        efectivo: { name: "Efectivo", logo: "/efectivo.svg" }
+                      };
+                      const details = logoMap[method];
+                      if (!details) return null;
+                      return (
+                        <div
+                          key={method}
+                          className="w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm border border-slate-100 flex items-center justify-center p-1 shadow-md hover:scale-110 transition-transform"
+                          title={details.name}
+                        >
+                          <img
+                            src={details.logo}
+                            alt={details.name}
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                      );
+                    })}
+                  </div>
+                )}
+
                 {promo.terms && (
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">
                     <Link
