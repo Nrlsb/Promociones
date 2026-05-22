@@ -67,34 +67,45 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {/* Overlays */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/20 opacity-60 group-hover:opacity-40 transition-opacity duration-500" />
 
-                {/* Métodos de pago */}
-                {promo.payment_methods && promo.payment_methods.length > 0 && (
-                  <div className="absolute top-4 left-4 flex gap-1.5 z-20">
-                    {promo.payment_methods.map((method) => {
-                      const logoMap = {
-                        mercadopago: { name: "Mercado Pago", logo: "/mercadopago.png" },
-                        mastercard: { name: "Mastercard", logo: "/mastercard.png" },
-                        visa: { name: "Visa", logo: "/visa.png" },
-                        efectivo: { name: "Efectivo", logo: "/efectivo.svg" }
-                      };
-                      const details = logoMap[method];
-                      if (!details) return null;
-                      return (
-                        <div
-                          key={method}
-                          className="w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm border border-slate-100 flex items-center justify-center p-1 shadow-md hover:scale-110 transition-transform"
-                          title={details.name}
-                        >
-                          <img
-                            src={details.logo}
-                            alt={details.name}
-                            className="w-full h-full object-contain"
-                          />
-                        </div>
-                      );
-                    })}
-                  </div>
-                )}
+                {/* Métodos de pago y Cuotas */}
+                <div className="absolute top-4 left-4 flex flex-col gap-2 z-20 items-start">
+                  {promo.payment_methods && promo.payment_methods.length > 0 && (
+                    <div className="flex gap-1.5">
+                      {promo.payment_methods.map((method) => {
+                        const logoMap = {
+                          mercadopago: { name: "Mercado Pago", logo: "/mercadopago.png" },
+                          mastercard: { name: "Mastercard", logo: "/mastercard.png" },
+                          visa: { name: "Visa", logo: "/visa.png" },
+                          efectivo: { name: "Efectivo", logo: "/efectivo.svg" }
+                        };
+                        const details = logoMap[method];
+                        if (!details) return null;
+                        return (
+                          <div
+                            key={method}
+                            className="w-8 h-8 rounded-full bg-white/95 backdrop-blur-sm border border-slate-100 flex items-center justify-center p-1 shadow-md hover:scale-110 transition-transform"
+                            title={details.name}
+                          >
+                            <img
+                              src={details.logo}
+                              alt={details.name}
+                              className="w-full h-full object-contain"
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+
+                  {promo.installments && (
+                    <div className="bg-white/95 text-slate-800 text-[10px] font-black uppercase tracking-wider px-2.5 py-1.5 rounded-full shadow-md backdrop-blur-sm flex items-center gap-1.5 border border-slate-100/80">
+                      <svg className="w-3.5 h-3.5 text-mercurio-navy shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                      </svg>
+                      <span>{promo.installments}</span>
+                    </div>
+                  )}
+                </div>
 
                 {promo.terms && (
                   <div className="absolute bottom-4 left-0 right-0 flex justify-center px-4 z-20">

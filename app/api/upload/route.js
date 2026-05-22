@@ -74,6 +74,9 @@ export async function POST(request) {
     // Obtener términos y condiciones en texto
     const terms = formData.get("terms")?.toString().trim() || null;
 
+    // Obtener cuotas
+    const installments = formData.get("installments")?.toString().trim() || null;
+
     // Obtener métodos de pago
     let payment_methods = [];
     const paymentMethodsRaw = formData.get("payment_methods");
@@ -93,7 +96,8 @@ export async function POST(request) {
         url: publicUrl, 
         filename,
         terms,
-        payment_methods
+        payment_methods,
+        installments
       })
       .select()
       .single();

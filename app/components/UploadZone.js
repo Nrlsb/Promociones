@@ -17,12 +17,21 @@ export default function UploadZone({ onUploadSuccess }) {
   const [previewFiles, setPreviewFiles] = useState([]);
   const [terms, setTerms] = useState("");
   const [selectedMethods, setSelectedMethods] = useState([]);
+  const [installments, setInstallments] = useState("");
+  const [customInstallments, setCustomInstallments] = useState("");
+  const [isCustomInstallments, setIsCustomInstallments] = useState(false);
   const fileInputRef = useRef(null);
 
   const toggleMethod = (id) => {
-    setSelectedMethods((prev) =>
-      prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id]
-    );
+    setSelectedMethods((prev) => {
+      const next = prev.includes(id) ? prev.filter((m) => m !== id) : [...prev, id];
+      if (!next.includes("mastercard") && !next.includes("visa")) {
+        setInstallments("");
+        setCustomInstallments("");
+        setIsCustomInstallments(false);
+      }
+      return next;
+    });
   };
 
   const handleDragOver = useCallback((e) => {
@@ -89,6 +98,9 @@ export default function UploadZone({ onUploadSuccess }) {
           formData.append("terms", terms.trim());
         }
         formData.append("payment_methods", JSON.stringify(selectedMethods));
+        if (installments.trim()) {
+          formData.append("installments", installments.trim());
+        }
 
         const res = await fetch("/api/upload", {
           method: "POST",
@@ -106,6 +118,9 @@ export default function UploadZone({ onUploadSuccess }) {
       setTitle("");
       setTerms("");
       setSelectedMethods([]);
+      setInstallments("");
+      setCustomInstallments("");
+      setIsCustomInstallments(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
       onUploadSuccess?.();
     } catch (err) {
@@ -249,6 +264,79 @@ export default function UploadZone({ onUploadSuccess }) {
             })}
           </div>
         </div>
+
+        {/* Cuotas con Tarjeta de Crédito */}
+        {(selectedMethods.includes("mastercard") || selectedMethods.includes("visa")) && (
+          <div className="space-y-3 p-5 bg-slate-50 rounded-2xl border border-slate-100 animate-entrance">
+            <label className="block text-base font-bold text-slate-700">
+              Cuotas con tarjeta de crédito
+            </label>
+            
+            <div className="flex flex-wrap gap-2.5">
+              {[
+                { id: "none", label: "1 Pago" },
+                { id: "3_sin", label: "3 cuotas sin interés" },
+                { id: "6_sin", label: "6 cuotas sin interés" },
+                { id: "12_sin", label: "12 cuotas sin interés" },
+                { id: "custom", label: "Otro..." }
+              ].map((opt) => {
+                const isSelected = 
+                  (opt.id === "none" && !installments) ||
+                  (opt.id === "3_sin" && installments === "3 cuotas sin interés") ||
+                  (opt.id === "6_sin" && installments === "6 cuotas sin interés") ||
+                  (opt.id === "12_sin" && installments === "12 cuotas sin interés") ||
+                  (opt.id === "custom" && isCustomInstallments);
+
+                return (
+                  <button
+                    key={opt.id}
+                    type="button"
+                    onClick={() => {
+                      if (opt.id === "none") {
+                        setInstallments("");
+                        setIsCustomInstallments(false);
+                      } else if (opt.id === "custom") {
+                        setIsCustomInstallments(true);
+                        setInstallments(customInstallments);
+                      } else {
+                        setIsCustomInstallments(false);
+                        const labelMap = {
+                          "3_sin": "3 cuotas sin interés",
+                          "6_sin": "6 cuotas sin interés",
+                          "12_sin": "12 cuotas sin interés"
+                        };
+                        setInstallments(labelMap[opt.id]);
+                      }
+                    }}
+                    className={`px-4 py-2.5 rounded-xl border text-sm font-bold transition-all duration-200 cursor-pointer active:scale-95 ${
+                      isSelected
+                        ? "border-mercurio-navy bg-white text-mercurio-navy shadow-sm ring-2 ring-mercurio-navy/10"
+                        : "border-slate-200 bg-white text-slate-500 hover:border-slate-300"
+                    }`}
+                  >
+                    {opt.label}
+                  </button>
+                );
+              })}
+            </div>
+
+            {/* Custom installments text input */}
+            {isCustomInstallments && (
+              <div className="mt-3 animate-entrance">
+                <input
+                  type="text"
+                  value={customInstallments}
+                  onChange={(e) => {
+                    setCustomInstallments(e.target.value);
+                    setInstallments(e.target.value);
+                  }}
+                  placeholder="Ej: 18 cuotas fijas o 3 cuotas con recargo"
+                  className="w-full rounded-xl border border-slate-300 px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-mercurio-navy bg-white placeholder:text-slate-400"
+                />
+              </div>
+            )}
+          </div>
+        )}
 
         {/* Términos y condiciones (opcional) */}
         <div>
