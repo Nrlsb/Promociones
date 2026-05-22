@@ -2,6 +2,7 @@
 import { useState, useEffect, useCallback } from "react";
 import UploadZone from "../components/UploadZone";
 import PromoGallery from "../components/PromoGallery";
+import EditPromoModal from "../components/EditPromoModal";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
 
@@ -9,6 +10,7 @@ export default function AdminPage() {
     const [promotions, setPromotions] = useState([]);
     const [stats, setStats] = useState({ count: 0 });
     const [loading, setLoading] = useState(true);
+    const [editingPromo, setEditingPromo] = useState(null);
     const router = useRouter();
 
     const fetchPromotions = useCallback(async () => {
@@ -105,7 +107,19 @@ export default function AdminPage() {
                 <PromoGallery
                     promotions={promotions}
                     onDelete={fetchPromotions}
+                    onEdit={setEditingPromo}
                     isAdmin={true}
+                />
+            )}
+
+            {editingPromo && (
+                <EditPromoModal
+                    promo={editingPromo}
+                    onClose={() => setEditingPromo(null)}
+                    onSaveSuccess={() => {
+                        setEditingPromo(null);
+                        fetchPromotions();
+                    }}
                 />
             )}
         </div>

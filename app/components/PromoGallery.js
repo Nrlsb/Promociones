@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-export default function PromoGallery({ promotions, onDelete, isAdmin = false }) {
+export default function PromoGallery({ promotions, onDelete, onEdit, isAdmin = false }) {
   const [deleting, setDeleting] = useState(null);
 
   const handleDelete = async (id) => {
@@ -124,9 +124,18 @@ export default function PromoGallery({ promotions, onDelete, isAdmin = false }) 
                 {isAdmin && (
                   <div className="absolute top-4 right-4 flex gap-2 z-30">
                     <button
+                      onClick={() => onEdit?.(promo)}
+                      className="w-10 h-10 bg-white/80 hover:bg-mercurio-navy text-slate-800 hover:text-white backdrop-blur-md rounded-full flex items-center justify-center transition-all duration-300 border border-white/40 shadow-sm cursor-pointer"
+                      title="Editar"
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                      </svg>
+                    </button>
+                    <button
                       onClick={() => handleDelete(promo.id)}
                       disabled={deleting === promo.id}
-                      className="w-10 h-10 bg-white/20 hover:bg-red-500/90 backdrop-blur-md rounded-full flex items-center justify-center text-white transition-all duration-300 border border-white/30 cursor-pointer"
+                      className="w-10 h-10 bg-white/80 hover:bg-red-500/90 text-slate-800 hover:text-white backdrop-blur-md rounded-full flex items-center justify-center transition-all duration-300 border border-white/40 shadow-sm cursor-pointer"
                       title="Eliminar"
                     >
                       {deleting === promo.id ? "..." : (
