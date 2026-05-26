@@ -41,7 +41,7 @@ export default function HomePage() {
             Promociones <br /> <span className="text-white/60">Imperdibles</span>
           </h1>
           <p className="text-sm md:text-base text-white/60 max-w-md font-medium leading-relaxed mt-2">
-            Descubrí las mejores oportunidades para renovar tus espacios con la calidad de Mercurio Pinturerías.
+            Descubrí las mejores oportunidades para renovar tus espacios. ¡Al mejor precio!
           </p>
         </div>
       </div>
