@@ -29,7 +29,13 @@ export default function HomePage() {
   return (
     <div className="space-y-10 py-6">
       {/* Hero-like title section */}
-      <div className="relative overflow-hidden rounded-[2.5rem] bg-mercurio-navy p-8 md:p-12 text-white animate-entrance">
+      <div 
+        className="relative overflow-hidden rounded-[2.5rem] bg-mercurio-navy bg-cover bg-center bg-no-repeat p-8 md:p-12 text-white animate-entrance"
+        style={{ backgroundImage: "url('/fondo.jpeg')" }}
+      >
+        {/* Overlay para mejorar legibilidad de texto */}
+        <div className="absolute inset-0 bg-gradient-to-r from-mercurio-navy/90 via-mercurio-navy/65 to-mercurio-navy/40" />
+
         <div className="absolute top-0 right-0 w-64 h-64 bg-mercurio-pink/20 blur-[100px] rounded-full -mr-20 -mt-20" />
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-mercurio-yellow/10 blur-[80px] rounded-full -ml-10 -mb-10" />
 
