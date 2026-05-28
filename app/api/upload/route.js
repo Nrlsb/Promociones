@@ -128,7 +128,7 @@ export async function POST(request) {
         const notificationImageUrl = `${baseUrl}/api/notification-image?url=${encodeURIComponent(publicUrl)}`;
 
         const payload = JSON.stringify({
-          title: "¡Nueva Promoción!",
+          title: "Nueva promoción de Pinturerías Mercurio",
           body: title,
           url: "/", // Puedes redirigir a la raíz o a la promo específica si tienes rutas
           icon: "/logoMercurio.png",

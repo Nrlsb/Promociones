@@ -13,12 +13,12 @@ self.addEventListener('push', function(event) {
         }
       };
       event.waitUntil(
-        self.registration.showNotification(data.title || '¡Nueva Promoción!', options)
+        self.registration.showNotification(data.title || 'Nueva promoción de Pinturerías Mercurio', options)
       );
     } catch (e) {
       console.error('Error parseando JSON de push event:', e);
       event.waitUntil(
-        self.registration.showNotification('¡Nueva Promoción!', {
+        self.registration.showNotification('Nueva promoción de Pinturerías Mercurio', {
           body: event.data.text() || 'Ingresá para ver la nueva promoción.',
           icon: '/logoMercurio.png',
           data: {
