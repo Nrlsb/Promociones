@@ -122,12 +122,17 @@ export async function POST(request) {
           process.env.VAPID_PRIVATE_KEY || ""
         );
 
+        // Obtener la URL base del servidor de forma dinámica a partir del request
+        const requestUrl = new URL(request.url);
+        const baseUrl = `${requestUrl.protocol}//${requestUrl.host}`;
+        const notificationImageUrl = `${baseUrl}/api/notification-image?url=${encodeURIComponent(publicUrl)}`;
+
         const payload = JSON.stringify({
           title: "¡Nueva Promoción!",
           body: title,
           url: "/", // Puedes redirigir a la raíz o a la promo específica si tienes rutas
           icon: "/logoMercurio.png",
-          image: publicUrl
+          image: notificationImageUrl
         });
 
         const sendPromises = subscriptions.map((sub) =>
