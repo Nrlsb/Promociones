@@ -1,6 +1,14 @@
 import { supabase } from "@/lib/supabase";
 import { supabaseAdmin } from "@/lib/supabase-admin";
 import { randomUUID } from "crypto";
+import webpush from "web-push";
+
+// Configurar detalles VAPID para el envío de notificaciones push
+webpush.setVapidDetails(
+  "mailto:soporte@tuweb.com",
+  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
+  process.env.VAPID_PRIVATE_KEY || ""
+);
 
 const MAX_SIZE = 10 * 1024 * 1024;
 const BUCKET = "promotions";
@@ -105,6 +113,42 @@ export async function POST(request) {
     if (dbError) {
       console.error(dbError);
       return Response.json({ error: "Error al guardar en la base de datos." }, { status: 500 });
+    }
+
+    // Enviar notificaciones push de forma asíncrona a todos los dispositivos suscritos
+    try {
+      const { data: subscriptions, error: fetchSubsError } = await supabaseAdmin
+        .from("push_subscriptions")
+        .select("id, subscription");
+
+      if (subscriptions && subscriptions.length > 0 && !fetchSubsError) {
+        const payload = JSON.stringify({
+          title: "¡Nueva Promoción!",
+          body: title,
+          url: "/", // Puedes redirigir a la raíz o a la promo específica si tienes rutas
+          icon: "/logoMercurio.png"
+        });
+
+        const sendPromises = subscriptions.map((sub) =>
+          webpush.sendNotification(sub.subscription, payload).catch(async (err) => {
+            console.error(`Error enviando notificación a sub ID ${sub.id}:`, err);
+            // Si el servicio responde 410 (Gone) o 404 (Not Found), la suscripción es inválida
+            // y la eliminamos de la base de datos para mantenerla limpia.
+            if (err.statusCode === 410 || err.statusCode === 404) {
+              await supabaseAdmin
+                .from("push_subscriptions")
+                .delete()
+                .eq("id", sub.id);
+            }
+          })
+        );
+
+        // Esperamos a que todas las promesas de envío finalicen (resueltas o rechazadas)
+        await Promise.allSettled(sendPromises);
+      }
+    } catch (pushError) {
+      console.error("Error general en el envío de notificaciones push:", pushError);
+      // No bloqueamos la respuesta al cliente si el envío de notificaciones falla.
     }
 
     return Response.json(promo, { status: 201 });

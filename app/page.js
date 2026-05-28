@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import PromoGallery from "./components/PromoGallery";
+import NotificationSubscribe from "./components/NotificationSubscribe";
 
 export default function HomePage() {
   const [promotions, setPromotions] = useState([]);
@@ -51,6 +52,8 @@ export default function HomePage() {
           </p>
         </div>
       </div>
+
+      <NotificationSubscribe />
 
       {loading ? (
         <div className="flex flex-col items-center justify-center py-32 gap-6 animate-pulse">
