@@ -6,6 +6,7 @@ self.addEventListener('push', function(event) {
         body: data.body,
         icon: data.icon || '/logoMercurio.png',
         badge: data.badge || '/logoMercurio.png',
+        image: data.image || null,
         vibrate: [100, 50, 100],
         data: {
           url: data.url || '/'

@@ -126,7 +126,8 @@ export async function POST(request) {
           title: "¡Nueva Promoción!",
           body: title,
           url: "/", // Puedes redirigir a la raíz o a la promo específica si tienes rutas
-          icon: "/logoMercurio.png"
+          icon: "/logoMercurio.png",
+          image: publicUrl
         });
 
         const sendPromises = subscriptions.map((sub) =>
