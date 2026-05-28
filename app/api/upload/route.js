@@ -3,13 +3,6 @@ import { supabaseAdmin } from "@/lib/supabase-admin";
 import { randomUUID } from "crypto";
 import webpush from "web-push";
 
-// Configurar detalles VAPID para el envío de notificaciones push
-webpush.setVapidDetails(
-  "mailto:soporte@tuweb.com",
-  process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
-  process.env.VAPID_PRIVATE_KEY || ""
-);
-
 const MAX_SIZE = 10 * 1024 * 1024;
 const BUCKET = "promotions";
 
@@ -122,6 +115,13 @@ export async function POST(request) {
         .select("id, subscription");
 
       if (subscriptions && subscriptions.length > 0 && !fetchSubsError) {
+        // Inicializar VAPID dinámicamente en tiempo de ejecución para evitar errores en el build
+        webpush.setVapidDetails(
+          "mailto:soporte@tuweb.com",
+          process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY || "",
+          process.env.VAPID_PRIVATE_KEY || ""
+        );
+
         const payload = JSON.stringify({
           title: "¡Nueva Promoción!",
           body: title,
